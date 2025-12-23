@@ -24,8 +24,8 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter,
 
 .hero { padding: 96px 0 48px; text-align: center; }
 .hero h1 { font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 12px; text-align: center; }
-.hero p { color: var(--muted); margin: 0 0 24px; }
-.rotating-word { color: var(--canada); padding-bottom: 2px; display: inline-block; text-align: left; min-width: 8ch; animation: fadeIn 0.6s ease; }
+.hero p { color: var(--muted); margin: 2em 5em 2em; font-size: large; letter-spacing: 1px; text-align: left;}
+.rotating-word { color: var(--canada); padding-bottom: 2px; display: inline-block; text-align: center; min-width: 8ch; animation: fadeIn 0.6s ease; }
 .hero-cta { display: inline-block; background: var(--primary); color: white; padding: 12px 18px; border-radius: 12px; text-decoration: none; box-shadow: 0 8px 24px rgba(91,156,255,0.3); }
 .hero-cta:hover { transform: translateY(-1px); }
 

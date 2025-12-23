@@ -3,10 +3,12 @@ import { useEffect, useMemo, useState } from 'react';
 const KEYWORDS = [
   'Canada',
   'civic tech',
-  'GIS',
   'urban planning',
   'public policy',
   'civil service',
+  'housing',
+  'GIS',
+  'transportation',
 ];
 
 const ROTATE_MS = 2000;
@@ -32,8 +34,13 @@ export default function Hero() {
       <div className="container">
         <h1>
           Can<span style={{ color: '#ff5c5c' }}>eh</span>dian Civic Careers in{' '}
-          <span className="rotating-word" aria-live="polite">{currentKeyword}</span>
         </h1>
+        <h1><span className="rotating-word" aria-live="polite">{currentKeyword}</span></h1>
+        <p>Maybe you're an urbanist, community organizer, social good advocate, policy whiz or civic technologist. 
+          Maybe you studied journalism, nursing, computer science, anthropology or engineering and you're not 
+          sure how to pursue a civic career in the space. <br></br><br></br> So where are all the jobs eh? 
+          <br></br><br></br> Canehdian Civic Careers is a place to explore roles that blend civic interest 
+          with <em>any</em> skillset, because serving your community can be immensely fulfilling! </p>
         <a href="#jobs" className="hero-cta">Browse Open Roles ↓</a>
       </div>
     </section>

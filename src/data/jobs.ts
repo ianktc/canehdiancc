@@ -1,3 +1,19 @@
+// Database row type from Supabase
+export type JobRow = {
+  id: string;
+  created_at: string;
+  title: string;
+  company: string;
+  location: string;
+  remote: boolean;
+  tags: string[]; // PostgreSQL array or JSONB
+  salary: string | null;
+  description: string | null;
+  apply_url: string | null;
+  posted_at: string | null;
+};
+
+// Frontend display type
 export type Job = {
   id: string;
   title: string;
@@ -7,6 +23,8 @@ export type Job = {
   tags: string[];
   salary?: string;
   postedAt?: string;
+  description?: string;
+  applyUrl?: string;
 };
 
 export const jobs: Job[] = [

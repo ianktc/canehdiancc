@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 import JobCard from '../components/JobCard';
-import { jobs as mockJobs } from '../data/jobs';
 import { fetchJobs } from '../lib/supabase';
 import type { Job } from '../data/jobs';
 
 export default function JobGrid() {
-  const [jobs, setJobs] = useState<Job[]>(mockJobs);
+  const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

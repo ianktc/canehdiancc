@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import type { Job } from '../data/jobs';
 
 type Props = {
@@ -19,7 +20,9 @@ export default function JobCard({ job }: Props) {
           <span key={t} className="tag">{t}</span>
         ))}
       </div>
-      <a className="apply-btn" href="#" aria-label={`Apply to ${job.title} at ${job.company}`}>Apply</a>
+      <Link to={`/jobs/${job.id}`} className="apply-btn" aria-label={`View ${job.title} at ${job.company}`}>
+        View Details
+      </Link>
     </article>
   );
 }

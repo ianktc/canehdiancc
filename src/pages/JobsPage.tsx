@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import JobCard from '../components/JobCard';
 import { fetchJobs } from '../lib/supabase';
 import type { Job } from '../data/jobs';
+import SearchableSelect from '../components/SearchableSelect';
 
 const SALARY_OPTIONS = [
   { label: 'Any salary', value: 0 },
@@ -60,13 +61,40 @@ export default function JobsPage() {
     loadJobs();
   }, []);
 
+  const provinceOptions = useMemo(() => {
+    const counts: Record<string, number> = {};
+    const termsMap: Record<string, Set<string>> = {};
+
+    jobs.forEach((job) => {
+      const loc = job.location || '';
+      const city = loc.split(',')[0].trim();
+      Object.keys(PROVINCE_MAP).forEach((code) => {
+        if (loc.includes(code)) {
+          counts[code] = (counts[code] || 0) + 1;
+          if (!termsMap[code]) termsMap[code] = new Set<string>();
+          termsMap[code].add(loc);
+          if (city) termsMap[code].add(city);
+        }
+      });
+    });
+
+    const sortedCodes = Object.keys(PROVINCE_MAP).sort((a, b) => (counts[b] || 0) - (counts[a] || 0));
+    return [
+      { code: '', label: 'All locations' },
+      ...sortedCodes.map((code) => ({
+        code,
+        label: `${PROVINCE_MAP[code]}${counts[code] ? ` (${counts[code]})` : ''}`,
+        terms: Array.from(termsMap[code] || new Set<string>()),
+      })),
+    ];
+  }, [jobs]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const loc = location.trim().toLowerCase();
 
     return jobs.filter((job) => {
       const matchesTitle = q === '' || job.title.toLowerCase().includes(q);
-      const matchesLocation = loc === '' || job.location.toLowerCase().includes(loc);
+      const matchesLocation = location === '' || job.location.includes(location);
       const matchesRemote = !remoteOnly || job.remote;
       const matchesSalary = salaryMin === 0 || extractMinSalary(job.salary) >= salaryMin;
       return matchesTitle && matchesLocation && matchesRemote && matchesSalary;
@@ -106,12 +134,12 @@ export default function JobsPage() {
 
             <div className="filter-group">
               <label htmlFor="location">Location</label>
-              <input
-                id="location"
-                type="text"
-                placeholder="City, province, or remote"
+              <SearchableSelect
+                options={provinceOptions}
                 value={location}
-                onChange={(e) => setLocation(e.target.value)}
+                onChange={setLocation}
+                ariaLabel="Location filter"
+                placeholder="All locations"
               />
             </div>
 

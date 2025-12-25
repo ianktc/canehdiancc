@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import JobCard from '../components/JobCard';
-import { fetchJobs } from '../lib/supabase';
+import { fetchCurrentJobs } from '../lib/supabase';
 import type { Job } from '../data/jobs';
 
 export default function JobGrid() {
@@ -12,7 +12,7 @@ export default function JobGrid() {
     async function loadJobs() {
       try {
         setLoading(true);
-        const data = await fetchJobs();
+        const data = await fetchCurrentJobs();
         if (data.length > 0) {
           setJobs(data);
         }

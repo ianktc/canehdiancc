@@ -13,6 +13,7 @@ export type JobRow = {
   description: string | null;
   apply_url: string | null;
   posted_at: string | null;
+  expiration: string | null;
 };
 
 // Frontend display type
@@ -29,6 +30,7 @@ export type Job = {
   postedAt?: string;
   description?: string;
   applyUrl?: string;
+  expiration?: string;
 };
 
 export const jobs: Job[] = [

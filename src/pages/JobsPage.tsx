@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import JobCard from '../components/JobCard';
-import { fetchJobs } from '../lib/supabase';
+import { fetchCurrentJobs } from '../lib/supabase';
 import type { Job } from '../data/jobs';
 import SearchableSelect from '../components/SearchableSelect';
 
@@ -39,7 +39,7 @@ export default function JobsPage() {
     async function loadJobs() {
       try {
         setLoading(true);
-        const data = await fetchJobs();
+        const data = await fetchCurrentJobs();
         if (data.length > 0) setJobs(data);
         setError(null);
       } catch (err) {

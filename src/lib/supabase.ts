@@ -28,6 +28,13 @@ function mapJobRow(row: JobRow): Job {
   };
 }
 
+// Treat rows with expiration before today as expired
+function isExpired(row: JobRow): boolean {
+  if (!row.expiration) return false;
+  const today = new Date().toISOString().split('T')[0];
+  return row.expiration < today;
+}
+
 /**
  * Fetch all jobs from Supabase
  */
@@ -46,6 +53,25 @@ export async function fetchJobs(): Promise<Job[]> {
 }
 
 /**
+ * Fetch all current jobs from Supabase
+ */
+export async function fetchCurrentJobs(): Promise<Job[]> {
+  const today = new Date().toISOString().split('T')[0];
+  const { data, error } = await supabase
+    .from('jobs')
+    .select('*')
+    .or(`expiration.is.null,expiration.gte.${today}`)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Supabase error:', error);
+    throw error;
+  }
+
+  return (data || []).filter((row) => !isExpired(row)).map(mapJobRow);
+}
+
+/**
  * Fetch a single job by ID
  */
 export async function fetchJobById(id: string): Promise<Job | null> {
@@ -60,7 +86,8 @@ export async function fetchJobById(id: string): Promise<Job | null> {
     return null;
   }
 
-  return data ? mapJobRow(data) : null;
+  if (!data || isExpired(data)) return null;
+  return mapJobRow(data);
 }
 
 /**

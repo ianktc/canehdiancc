@@ -4,20 +4,27 @@ export type Option = { code: string; label: string; terms?: string[] };
 
 type Props = {
   options: Option[];
-  value: string; // selected code
-  onChange: (code: string) => void;
+  value: string | string[]; // selected code(s)
+  onChange: (code: string | string[]) => void;
   placeholder?: string;
   ariaLabel?: string;
+  multiple?: boolean;
 };
 
-export default function SearchableSelect({ options, value, onChange, placeholder = 'Select…', ariaLabel = 'Searchable select' }: Props) {
+export default function SearchableSelect({ options, value, onChange, placeholder = 'Select…', ariaLabel = 'Searchable select', multiple = false }: Props) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [highlight, setHighlight] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const selectedLabel = useMemo(() => options.find((o) => o.code === value)?.label ?? '', [options, value]);
+  const selectedCodes = Array.isArray(value) ? value : value ? [value] : [];
+  const selectedLabels = useMemo(() => {
+    return selectedCodes
+      .map((code) => options.find((o) => o.code === code)?.label)
+      .filter(Boolean)
+      .join(', ');
+  }, [options, selectedCodes]);
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return options;
@@ -46,11 +53,20 @@ export default function SearchableSelect({ options, value, onChange, placeholder
   }, [open, query]);
 
   function commitSelection(opt: Option) {
-    onChange(opt.code);
-    setOpen(false);
-    setQuery('');
-    // Keep focus on input for quick re-filter
-    inputRef.current?.focus();
+    if (multiple) {
+      const newValues = selectedCodes.includes(opt.code)
+        ? selectedCodes.filter((c) => c !== opt.code)
+        : [...selectedCodes, opt.code];
+      onChange(newValues.length === 0 ? '' : newValues);
+      // Keep menu open in multiselect mode
+      inputRef.current?.focus();
+    } else {
+      onChange(opt.code);
+      setOpen(false);
+      setQuery('');
+      // Keep focus on input for quick re-filter
+      inputRef.current?.focus();
+    }
   }
 
   return (
@@ -68,7 +84,7 @@ export default function SearchableSelect({ options, value, onChange, placeholder
         type="text"
         aria-label={ariaLabel}
         placeholder={placeholder}
-        value={open ? query : selectedLabel || ''}
+        value={open ? query : selectedLabels || ''}
         onFocus={() => setOpen(true)}
         onChange={(e) => {
           setQuery(e.target.value);
@@ -102,11 +118,19 @@ export default function SearchableSelect({ options, value, onChange, placeholder
               <div
                 key={opt.code}
                 role="option"
-                aria-selected={value === opt.code}
+                aria-selected={selectedCodes.includes(opt.code)}
                 className={`select-option${idx === highlight ? ' active' : ''}`}
                 onMouseEnter={() => setHighlight(idx)}
                 onClick={() => commitSelection(opt)}
               >
+                {multiple && (
+                  <input
+                    type="checkbox"
+                    checked={selectedCodes.includes(opt.code)}
+                    readOnly
+                    className="select-checkbox"
+                  />
+                )}
                 {opt.label}
               </div>
             ))

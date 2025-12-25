@@ -19,6 +19,8 @@ function mapJobRow(row: JobRow): Job {
     location: row.location,
     remote: row.remote,
     tags: row.tags,
+    industry: row.industry || undefined,
+    department: row.department || undefined,
     salary: row.salary || undefined,
     postedAt: row.posted_at || undefined,
     description: row.description || undefined,

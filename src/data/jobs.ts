@@ -6,7 +6,9 @@ export type JobRow = {
   company: string;
   location: string;
   remote: boolean;
-  tags: string[]; // PostgreSQL array or JSONB
+  tags: string[]; 
+  industry: string[] | null;
+  department: string[] | null;
   salary: string | null;
   description: string | null;
   apply_url: string | null;
@@ -21,6 +23,8 @@ export type Job = {
   location: string;
   remote?: boolean;
   tags: string[];
+  industry?: string[];
+  department?: string[];
   salary?: string;
   postedAt?: string;
   description?: string;

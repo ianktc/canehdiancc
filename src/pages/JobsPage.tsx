@@ -4,13 +4,7 @@ import { fetchJobs } from '../lib/supabase';
 import type { Job } from '../data/jobs';
 import SearchableSelect from '../components/SearchableSelect';
 
-const SALARY_OPTIONS = [
-  { label: 'Any salary', value: 0 },
-  { label: '$100k+', value: 100 },
-  { label: '$130k+', value: 130 },
-  { label: '$150k+', value: 150 },
-  { label: '$170k+', value: 170 },
-];
+// Removed salary filter; using industry and department instead
 
 const PROVINCE_MAP: Record<string, string> = {
   YT: 'Yukon',
@@ -28,11 +22,7 @@ const PROVINCE_MAP: Record<string, string> = {
   NS: 'Nova Scotia',
 };
 
-function extractMinSalary(salary?: string): number {
-  if (!salary) return 0;
-  const match = salary.replace(/,/g, '').match(/(\d+(?:\.\d+)?)/);
-  return match ? Number(match[1]) : 0;
-}
+//
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -42,7 +32,8 @@ export default function JobsPage() {
   const [query, setQuery] = useState('');
   const [location, setLocation] = useState('');
   const [remoteOnly, setRemoteOnly] = useState(false);
-  const [salaryMin, setSalaryMin] = useState<number>(0);
+  const [industry, setIndustry] = useState<string[]>([]);
+  const [department, setDepartment] = useState<string[]>([]);
 
   useEffect(() => {
     async function loadJobs() {
@@ -89,6 +80,42 @@ export default function JobsPage() {
     ];
   }, [jobs]);
 
+  const industryOptions = useMemo(() => {
+    const counts: Record<string, number> = {};
+    jobs.forEach((job) => {
+      const list = Array.isArray(job.industry)
+        ? job.industry
+        : job.industry
+        ? [job.industry]
+        : [];
+      list.forEach((name) => {
+        const key = (name || '').trim();
+        if (!key) return;
+        counts[key] = (counts[key] || 0) + 1;
+      });
+    });
+    const sorted = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    return sorted.map((name) => ({ code: name, label: `${name} (${counts[name]})` }));
+  }, [jobs]);
+
+  const departmentOptions = useMemo(() => {
+    const counts: Record<string, number> = {};
+    jobs.forEach((job) => {
+      const list = Array.isArray(job.department)
+        ? job.department
+        : job.department
+        ? [job.department]
+        : [];
+      list.forEach((name) => {
+        const key = (name || '').trim();
+        if (!key) return;
+        counts[key] = (counts[key] || 0) + 1;
+      });
+    });
+    const sorted = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    return sorted.map((name) => ({ code: name, label: `${name} (${counts[name]})` }));
+  }, [jobs]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
 
@@ -96,16 +123,26 @@ export default function JobsPage() {
       const matchesTitle = q === '' || job.title.toLowerCase().includes(q);
       const matchesLocation = location === '' || job.location.includes(location);
       const matchesRemote = !remoteOnly || job.remote;
-      const matchesSalary = salaryMin === 0 || extractMinSalary(job.salary) >= salaryMin;
-      return matchesTitle && matchesLocation && matchesRemote && matchesSalary;
+      const matchesIndustry =
+        industry.length === 0 ||
+        (Array.isArray(job.industry)
+          ? job.industry.some((i) => industry.includes((i || '').toLowerCase()))
+          : industry.includes(((job.industry || '') as string).toLowerCase()));
+      const matchesDepartment =
+        department.length === 0 ||
+        (Array.isArray(job.department)
+          ? job.department.some((d) => department.includes((d || '').toLowerCase()))
+          : department.includes(((job.department || '') as string).toLowerCase()));
+      return matchesTitle && matchesLocation && matchesRemote && matchesIndustry && matchesDepartment;
     });
-  }, [jobs, query, location, remoteOnly, salaryMin]);
+  }, [jobs, query, location, remoteOnly, industry, department]);
 
   const handleReset = () => {
     setQuery('');
     setLocation('');
     setRemoteOnly(false);
-    setSalaryMin(0);
+    setIndustry([]);
+    setDepartment([]);
   };
 
   return (
@@ -137,25 +174,34 @@ export default function JobsPage() {
               <SearchableSelect
                 options={provinceOptions}
                 value={location}
-                onChange={setLocation}
+                onChange={(val) => setLocation(Array.isArray(val) ? val[0] || '' : val)}
                 ariaLabel="Location filter"
                 placeholder="All locations"
               />
             </div>
 
             <div className="filter-group">
-              <label htmlFor="salary">Salary</label>
-              <select
-                id="salary"
-                value={salaryMin}
-                onChange={(e) => setSalaryMin(Number(e.target.value))}
-              >
-                {SALARY_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
+              <label htmlFor="industry">Industry</label>
+              <SearchableSelect
+                options={industryOptions}
+                value={industry}
+                onChange={(val) => setIndustry(Array.isArray(val) ? val : [])}
+                ariaLabel="Industry filter"
+                placeholder="All industries"
+                multiple
+              />
+            </div>
+
+            <div className="filter-group">
+              <label htmlFor="department">Department</label>
+              <SearchableSelect
+                options={departmentOptions}
+                value={department}
+                onChange={(val) => setDepartment(Array.isArray(val) ? val : [])}
+                ariaLabel="Department filter"
+                placeholder="All departments"
+                multiple
+              />
             </div>
 
             <div className="filter-group filter-checkbox">

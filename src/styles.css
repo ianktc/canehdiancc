@@ -58,9 +58,10 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter,
 .searchable-select-input:focus { outline: 2px solid rgba(91,156,255,0.4); }
 .select-menu { position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 12px 24px rgba(0,0,0,0.25); max-height: 240px; overflow: auto; z-index: 20; }
 .select-empty { padding: 10px 12px; color: var(--muted); }
-.select-option { padding: 10px 12px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.select-option { padding: 10px 12px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 8px; }
 .select-option:last-child { border-bottom: none; }
 .select-option:hover, .select-option.active { background: rgba(255,255,255,0.04); }
+.select-checkbox { cursor: pointer; margin: 0; }
 
 .jobs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
 

@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { fetchJobById } from '../lib/supabase';
+import { fetchJobById, fetchJobDescriptionById } from '../lib/supabase';
 import type { Job } from '../data/jobs';
+import type { JobDescription } from '../data/jobDescriptions';
+import DOMPurify from 'dompurify';
+
 
 export default function JobPostingPage() {
   const { id } = useParams<{ id: string }>();
   const [job, setJob] = useState<Job | null>(null);
+  const [jobDescription, setJobDescription] = useState<JobDescription | null>(null);
   const [loading, setLoading] = useState(true);
+  const [descLoading, setDescLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -20,7 +25,7 @@ export default function JobPostingPage() {
       try {
         setLoading(true);
         const data = await fetchJobById(id);
-        
+
         if (!data) {
           setError('The job board is currently unavailable. Please try again later.');
           setJob(null);
@@ -38,6 +43,25 @@ export default function JobPostingPage() {
     }
     loadJob();
   }, [id]);
+
+  useEffect(() => {
+    async function loadJobDescription() {
+      if (!job || !job.description) {
+        setJobDescription(null);
+        return;
+      }
+      setDescLoading(true);
+      try {
+        const desc = await fetchJobDescriptionById(job.description);
+        setJobDescription(desc);
+      } catch (err) {
+        setJobDescription(null);
+      } finally {
+        setDescLoading(false);
+      }
+    }
+    loadJobDescription();
+  }, [job]);
 
   if (loading) {
     return (
@@ -88,7 +112,7 @@ export default function JobPostingPage() {
 
         <article className="job-posting">
           <header className="job-header">
-            <div>
+            <div className="job-header-left">
               <h1>{job.title}</h1>
               <div className="company-info">
                 <span className="company-name">{job.company}</span>
@@ -100,10 +124,15 @@ export default function JobPostingPage() {
                     <span className="remote-badge">Remote friendly</span>
                   </>
                 )}
+                {job.salary && (
+                  <div className="salary-badge">{job.salary}</div>
+                )}
               </div>
             </div>
-            {job.salary && (
-              <div className="salary-badge">{job.salary}</div>
+            {job.logoUrl && (
+              <div className="job-header-right">
+                <img className='company-logo' src={job.logoUrl} alt={`${job.company} logo`} />
+              </div>
             )}
           </header>
 
@@ -124,18 +153,33 @@ export default function JobPostingPage() {
             </div>
           )}
 
-          {job.description && (
+          {descLoading ? (
             <div className="description-section">
               <h3>About the Role</h3>
-              <div className="description">
-                {job.description.split('\n').map((para, i) => (
-                  <p key={i}>{para}</p>
-                ))}
-              </div>
+              <p>Loading job description…</p>
             </div>
-          )}
-
-          {!job.description && (
+          ) : jobDescription ? (
+            <>
+              {jobDescription.overview && (
+                <div className="description-section">
+                  <h3>Overview</h3>
+                  <div className="description" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(jobDescription.overview) }} />
+                </div>
+              )}
+              {jobDescription.responsibilities && (
+                <div className="description-section">
+                  <h3>Responsibilities</h3>
+                  <div className="description" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(jobDescription.responsibilities) }} />
+                </div>
+              )}
+              {jobDescription.qualifications && (
+                <div className="description-section">
+                  <h3>Qualifications</h3>
+                  <div className="description" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(jobDescription.qualifications) }} />
+                </div>
+              )}
+            </>
+          ) : (
             <div className="description-section">
               <h3>About the Role</h3>
               <p className="muted">

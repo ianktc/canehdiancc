@@ -1,10 +1,18 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Job, JobRow } from '../data/jobs';
+import type { JobDescription, JobDescriptionRow } from '../data/jobDescriptions';
 
 // Environment variables - set these in .env.local
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const supabaseUrl =
+  typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPABASE_URL
+    ? import.meta.env.VITE_SUPABASE_URL
+    : process.env.VITE_SUPABASE_URL || '';
 
+const supabaseAnonKey =
+  typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPABASE_ANON_KEY
+    ? import.meta.env.VITE_SUPABASE_ANON_KEY
+    : process.env.VITE_SUPABASE_ANON_KEY || '';
+    
 // Create Supabase client
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -24,7 +32,20 @@ function mapJobRow(row: JobRow): Job {
     salary: row.salary || undefined,
     postedAt: row.posted_at || undefined,
     description: row.description || undefined,
+    logoUrl: row.logo_url || undefined,
     applyUrl: row.apply_url || undefined,
+  };
+}
+
+/**
+ * Transform database row to frontend Job type
+ */
+function mapJobDescriptionRow(row: JobDescriptionRow): JobDescription {
+  return {
+    id: row.id,
+    overview: row.overview,
+    responsibilities: row.responsibilities,
+    qualifications: row.qualifications
   };
 }
 
@@ -72,6 +93,25 @@ export async function fetchCurrentJobs(): Promise<Job[]> {
 }
 
 /**
+ * Fetch a single job description by ID
+ */
+export async function fetchJobDescriptionById(id: string): Promise<JobDescription | null> {
+  const { data, error } = await supabase
+    .from('descriptions')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    console.error('Supabase error:', error);
+    return null;
+  }
+
+  if (!data || isExpired(data)) return null;
+  return mapJobDescriptionRow(data);
+}
+
+/**
  * Fetch a single job by ID
  */
 export async function fetchJobById(id: string): Promise<Job | null> {
@@ -93,7 +133,7 @@ export async function fetchJobById(id: string): Promise<Job | null> {
 /**
  * Add a new job (requires auth/admin permissions in production)
  */
-export async function addJob(job: Omit<JobRow, 'id' | 'created_at'>): Promise<Job | null> {
+export async function addJob(job: Omit<JobRow, 'id' | 'created_at' | 'posted_at' >): Promise<Job | null> {
   const { data, error } = await supabase
     .from('jobs')
     .insert([job])

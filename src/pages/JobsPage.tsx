@@ -131,8 +131,8 @@ export default function JobsPage() {
       const matchesDepartment =
         department.length === 0 ||
         (Array.isArray(job.department)
-          ? job.department.some((d) => department.includes((d || '').toLowerCase()))
-          : department.includes(((job.department || '') as string).toLowerCase()));
+          ? job.department.some((d) => department.includes((d || '')))
+          : department.includes(((job.department || '') as string)));
       return matchesTitle && matchesLocation && matchesRemote && matchesIndustry && matchesDepartment;
     });
   }, [jobs, query, location, remoteOnly, industry, department]);

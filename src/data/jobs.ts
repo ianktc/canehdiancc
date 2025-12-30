@@ -11,6 +11,7 @@ export type JobRow = {
   department: string[] | null;
   salary: string | null;
   description: string | null;
+  logo_url: string | null;
   apply_url: string | null;
   posted_at: string | null;
   expiration: string | null;
@@ -29,6 +30,7 @@ export type Job = {
   salary?: string;
   postedAt?: string;
   description?: string;
+  logoUrl?: string;
   applyUrl?: string;
   expiration?: string;
 };

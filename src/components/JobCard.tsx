@@ -8,11 +8,19 @@ type Props = {
 export default function JobCard({ job }: Props) {
   return (
     <article className="job-card" aria-labelledby={`job-${job.id}-title`}>
-      <div className="title" id={`job-${job.id}-title`}>{job.title}</div>
-      <div className="company">{job.company}</div>
+      <div className='header'>
+        <div className='left'>
+          <div className="title" id={`job-${job.id}-title`}>{job.title}</div>
+          <div className="company">{job.company}</div>
+        </div>
+        <div className='right'>
+          {job.logoUrl && (
+            <img className="company-logo" src={job.logoUrl} alt={`${job.company} logo`} />
+          )}    
+        </div>
+      </div>
       <div className="meta">
         <span>{job.location}</span>
-        {job.remote && <span>• Remote friendly</span>}
         {job.salary && <span>• {job.salary}</span>}
       </div>
       <div className="tags">

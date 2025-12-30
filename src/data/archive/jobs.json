@@ -1,0 +1,46 @@
+[
+{
+    "id": "null",
+    "created_at": "null",
+    "title": "Senior Business & Systems Analyst",
+    "company": "City of Toronto",
+    "location": "Toronto, ON",
+    "remote": true,
+    "tags": ["IBM Maximo"],
+    "industry": [
+      "civil service",
+      "real estate"
+    ],
+    "department": [
+      "information & technology"
+    ],
+    "salary": "$113,683.00-$155,216.00",
+    "description": "e1f409b5-d6ec-4c74-b676-495da34ff94b",
+    "logo_url": "https://sdnkncrhfgtafgeahiyo.supabase.co/storage/v1/object/sign/company-logos/city-of-toronto.svg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jZWY5NTRmNy00YjlhLTQ5ZGUtOWFmZS01NDAzYTgwYzcyOWYiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJjb21wYW55LWxvZ29zL2NpdHktb2YtdG9yb250by5zdmciLCJpYXQiOjE3NjcwNDc0NTAsImV4cCI6MTc5ODU4MzQ1MH0.A_QvoWsLGq09kYBiGlWmwXdX0qXRjMc2R1BRw6DCwjU",
+    "apply_url": "https://jobs.toronto.ca/jobsatcity/job/Toronto-SENIOR-BUSINESS-&-SYST-ANALYST-BS&R-1-ON-M4Y-0E6/597711817/",
+    "posted_at": "null",
+    "expiration": "2026-01-09 00:00:00-05"
+  },
+  {
+    "id": "null",
+    "created_at": "null",
+    "title": "Systems Integrator 2",
+    "company": "City of Toronto",
+    "location": "Toronto, ON",
+    "remote": true,
+    "tags": ["SQL", ".NET", "C#", "Git"],
+    "industry": [
+      "civil service",
+      "healthcare"
+    ],
+    "department": [
+      "information & technology"
+    ],
+    "salary": "$45.30-$49.64/hour",
+    "description": "74dad28c-d362-41d1-8d88-f8788c02958c",
+    "logo_url": "https://sdnkncrhfgtafgeahiyo.supabase.co/storage/v1/object/sign/company-logos/city-of-toronto.svg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jZWY5NTRmNy00YjlhLTQ5ZGUtOWFmZS01NDAzYTgwYzcyOWYiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJjb21wYW55LWxvZ29zL2NpdHktb2YtdG9yb250by5zdmciLCJpYXQiOjE3NjcwNDc0NTAsImV4cCI6MTc5ODU4MzQ1MH0.A_QvoWsLGq09kYBiGlWmwXdX0qXRjMc2R1BRw6DCwjU",
+    "apply_url": "https://jobs.toronto.ca/jobsatcity/job/Toronto-SENIOR-BUSINESS-&-SYST-ANALYST-BS&R-1-ON-M4Y-0E6/597711817/",
+    "posted_at": "null",
+    "expiration": "2026-01-09 00:00:00-05"
+  }
+]

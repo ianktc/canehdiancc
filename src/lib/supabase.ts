@@ -149,6 +149,24 @@ export async function addJob(job: Omit<JobRow, 'id' | 'created_at' | 'posted_at'
 }
 
 /**
+ * Add a new job description(requires auth/admin permissions in production)
+ */
+export async function addJobDescription(description: JobDescriptionRow): Promise<JobDescription | null> {
+  const { data, error } = await supabase
+    .from('descriptions')
+    .insert([description])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Supabase error:', error);
+    throw error;
+  }
+
+  return data ? mapJobDescriptionRow(data) : null;
+}
+
+/**
  * Update an existing job
  */
 export async function updateJob(id: string, updates: Partial<JobRow>): Promise<Job | null> {

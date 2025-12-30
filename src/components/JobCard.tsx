@@ -10,7 +10,9 @@ export default function JobCard({ job }: Props) {
     <article className="job-card" aria-labelledby={`job-${job.id}-title`}>
       <div className='header'>
         <div className='left'>
-          <div className="title" id={`job-${job.id}-title`}>{job.title}</div>
+          <div className="title" id={`job-${job.id}-title`}>
+            {job.title.length > 31 ? job.title.slice(0, 29) + '…' : job.title}
+          </div>
           <div className="company">{job.company}</div>
         </div>
         <div className='right'>

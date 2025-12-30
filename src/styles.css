@@ -70,7 +70,7 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter,
 .job-card .left { flex: 1;}
 .job-card .right { flex-shrink: 0; }
 .job-card .title { font-weight: 600; margin: 0 0 8px; }
-.job-card .company { color: var(--muted); }
+.job-card .company { color: var(--muted); margin: 0 0 8px;}
 .job-card .company-logo { width: 50px; height: auto; object-fit: contain; display: block; }
 .job-card .meta { display: flex; gap: 8px; color: var(--muted); font-size: 0.9rem; }
 .tags { display: flex; flex-wrap: wrap; gap: 8px; }
